@@ -1,19 +1,49 @@
 import "../styles/List.css";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../app/store";
 import ListCard from "./ListCard";
-function List() {
-  const listData = useSelector((state: RootState) => state.lists);
 
+import { fetchTodos, addTodo } from "../feature/listSlicer";
+import React, { useEffect } from "react";
+
+function List() {
+  const dispatch: AppDispatch = useDispatch();
+  const listData = useSelector((state: RootState) => state.lists);
+  const [newTodoName, setNewTodoName] = React.useState("");
+
+  // ? fetch todos when component mounts
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
+
+  // ? Adding new todo
+  const handleAddTodo = async () => {
+    if (newTodoName.trim()) {
+      await dispatch(addTodo({ todoName: newTodoName, isDone: false }));
+      setNewTodoName("");
+    }
+  };
+
+  // ? Render list todos
   const listDataELements = listData.map((item) => (
     <ListCard key={item.id} item={item} />
   ));
 
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    setNewTodoName(value);
+  }
+
   return (
     <div className="list-container">
       <div className="input-container">
-        <input className="input" type="text" />
-        <button className="add-button">
+        <input
+          value={newTodoName}
+          onChange={(e) => handleChange(e)}
+          className="input"
+          type="text"
+        />
+        <button onClick={handleAddTodo} className="add-button">
           <p>+</p>
         </button>
       </div>
