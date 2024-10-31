@@ -31,7 +31,10 @@ function ListCard({ item }: ListCardProps) {
         onChange={() => setVerify((verify) => !verify)}
       />
       <div className="list-title">{todoName}</div>
-      <button className="delete-button">X</button>
+      <div>
+        <button className="edit-button">Edit</button>
+        <button className="delete-button">X</button>
+      </div>
     </div>
   );
 }
